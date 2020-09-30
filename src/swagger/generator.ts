@@ -250,6 +250,17 @@ export class SpecGenerator {
         return swaggerParameter;
     }
 
+
+    private getRequiredProperties = function (properties: Array<Property>): Array<string> {
+        const requiredProperties: Array<string> = [];
+        properties.forEach(element => {
+            if(element.required){
+                requiredProperties.push(element.name);
+            }
+        });
+        return requiredProperties;
+    };
+
     private buildProperties(properties: Array<Property>) {
         const swaggerProperties: { [propertyName: string]: Swagger.Schema } = {};
 
@@ -376,7 +387,7 @@ export class SpecGenerator {
     }
 
     private getSwaggerTypeForObjectType(objectType: ObjectType): Swagger.Schema {
-        return { type: 'object', properties: this.buildProperties(objectType.properties) };
+        return { type: 'object', properties: this.buildProperties(objectType.properties), required: this.getRequiredProperties(objectType.properties)};
     }
 
     private getSwaggerTypeForArrayType(arrayType: ArrayType): Swagger.Schema {
